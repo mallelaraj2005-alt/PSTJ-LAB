@@ -1,0 +1,30 @@
+#include <vector>
+#include <algorithm>
+#include <numeric>
+
+class Solution {
+public:
+    int maxSubarraySumCircular(std::vector<int>& nums) {
+        int totalSum = 0;
+        int maxSum = nums[0], currentMax = 0;
+        int minSum = nums[0], currentMin = 0;
+
+        for (int num : nums) {
+           
+            currentMax = std::max(num, currentMax + num);
+            maxSum = std::max(maxSum, currentMax);
+
+           
+            currentMin = std::min(num, currentMin + num);
+            minSum = std::min(minSum, currentMin);
+
+            totalSum += num;
+        }
+
+        if (maxSum < 0) {
+            return maxSum;
+        }
+
+        return std::max(maxSum, totalSum - minSum);
+    }
+};
