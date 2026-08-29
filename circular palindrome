@@ -1,0 +1,84 @@
+import java.io.*;
+import java.util.*;
+import static java.util.stream.Collectors.joining;
+
+class Result {
+
+    /*
+     * Complete the 'circularPalindromes' function below.
+     * The function is expected to return an INTEGER_ARRAY.
+     */
+    public static List<Integer> circularPalindromes(String s) {
+        int n = s.length();
+        List<Integer> result = new ArrayList<>();
+        if (n == 0) return result;
+
+        String doubleS = s + s;
+
+        
+        for (int k = 0; k < n; k++) {
+            result.add(getMaxPalindrome(doubleS, k, n));
+        }
+
+        return result;
+    }
+
+    private static int getMaxPalindrome(String str, int start, int n) {
+       
+        StringBuilder sb = new StringBuilder("#");
+        for (int i = start; i < start + n; i++) {
+            sb.append(str.charAt(i)).append('#');
+        }
+        
+        char[] t = sb.toString().toCharArray();
+        int tLen = t.length;
+        int[] p = new int[tLen];
+
+        int center = 0, right = 0;
+        int maxLen = 0;
+
+        for (int i = 0; i < tLen; i++) {
+            int mirror = 2 * center - i;
+            if (i < right) {
+                p[i] = Math.min(right - i, p[mirror]);
+            }
+            
+            while (i - 1 - p[i] >= 0 && i + 1 + p[i] < tLen && t[i - 1 - p[i]] == t[i + 1 + p[i]]) {
+                p[i]++;
+            }
+
+            if (i + p[i] > right) {
+                center = i;
+                right = i + p[i];
+            }
+
+            if (p[i] > maxLen) {
+                maxLen = p[i];
+            }
+        }
+
+        return maxLen;
+    }
+}
+
+public class Solution {
+    public static void main(String[] args) throws IOException {
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(System.getenv("OUTPUT_PATH")));
+
+        int n = Integer.parseInt(bufferedReader.readLine().trim());
+        String s = bufferedReader.readLine();
+
+        List<Integer> result = Result.circularPalindromes(s);
+
+        bufferedWriter.write(
+            result.stream()
+                .map(Object::toString)
+                .collect(joining("\n"))
+            + "\n"
+        );
+
+        bufferedReader.close();
+        bufferedWriter.close();
+    }
+}
