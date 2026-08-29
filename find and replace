@@ -1,0 +1,33 @@
+import java.util.*;
+
+class Solution {
+    public List<String> findAndReplacePattern(String[] words, String pattern) {
+        List<String> result = new ArrayList<>();
+        
+        for (String word : words) {
+            if (matches(word, pattern)) {
+                result.add(word);
+            }
+        }
+        
+        return result;
+    }
+    
+    private boolean matches(String word, String pattern) {
+        int[] mapPatternToWord = new int[256];
+        int[] mapWordToPattern = new int[256];
+        
+        for (int i = 0; i < word.length(); i++) {
+            char p = pattern.charAt(i);
+            char w = word.charAt(i);
+            if (mapPatternToWord[p] == 0 && mapWordToPattern[w] == 0) {
+                mapPatternToWord[p] = w;
+                mapWordToPattern[w] = p;
+            } else if (mapPatternToWord[p] != w || mapWordToPattern[w] != p) {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+}
