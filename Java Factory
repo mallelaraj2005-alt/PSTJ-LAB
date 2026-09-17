@@ -1,3 +1,22 @@
+import java.util.*;
+import java.security.*;
+
+interface Food {
+    public String getType();
+}
+
+class Pizza implements Food {
+    public String getType() {
+        return "Someone ordered a Fast Food!";
+    }
+}
+
+class Cake implements Food {
+    public String getType() {
+        return "Someone ordered a Dessert!";
+    }
+}
+
 class FoodFactory {
     public Food getFood(String order) {
         if ("pizza".equalsIgnoreCase(order)) {
@@ -6,5 +25,44 @@ class FoodFactory {
             return new Cake();
         }
         return null;
+    }
+}
+
+public class Solution {
+
+    public static void main(String[] args) {
+        Do security = new Do();
+        try {
+            Scanner sc = new Scanner(System.in);
+            // Creating the factory object
+            FoodFactory foodFactory = new FoodFactory();
+
+            // Factory instantiates an object
+            Food food = foodFactory.getFood(sc.nextLine());
+
+            System.out.println("The factory returned class " + food.getClass().getSimpleName());
+            System.out.println(food.getType());
+            sc.close();
+        } catch (Do.ExitTrappedException e) {
+            System.out.println("Unsuccessful Termination!!");
+        }
+    }
+}
+
+class Do {
+    public static class ExitTrappedException extends SecurityException {
+        private static final long serialVersionUID = 1L;
+    }
+
+    public Do() {
+        SecurityManager securityManager = new SecurityManager() {
+            @Override
+            public void checkPermission(Permission permission) {
+                if (permission.getName().contains("exitVM")) {
+                    throw new ExitTrappedException();
+                }
+            }
+        };
+        System.setSecurityManager(securityManager);
     }
 }
